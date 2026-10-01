@@ -57,13 +57,13 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
       <li><a href="#fishing-bbq">釣りとBBQ</a></li>
       <li><a href="#checklist">持ち物チェック</a></li>
       <li><a href="#costs">費用・支払い方法</a></li>
-      <li><a href="#game">猿島危機一髪！（ゲームセクション）</a></li>
+      <li><a href="#game">猿島危機一髪���（ゲームセクション）</a></li>
     </ul>
   </section>
 
   <section class="card" id="greeting">
     <h2>ごあいさつ</h2>
-    <p class="lead">秋の釣りシーズン到来。横須賀沖に浮かぶ猿島で、のんびり釣りとBBQを楽しみましょう。釣る人、食べる人、島を歩く人、それぞれの[...]
+    <p class="lead">秋の釣りシーズン到来。横須賀沖に浮かぶ猿島で、のんびり釣りとBBQを楽しみましょう。釣る人、食べる人、島を歩く人、それぞれの楽しみ方で、海辺の一日を満喫してください。</p>
     <div class="notice"><b>基本方針：</b>安全第一、現地集合、コアタイム内の出入り自由。天候や海況に合わせて柔軟に楽しみます。</div>
   </section>
  
@@ -91,8 +91,8 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
   <section class="card" id="fishing-bbq">
     <h2>釣りとBBQ</h2>
     <div class="cols">
-      <div><h3>釣りポイント</h3><p><span class="tag">砂鉄の浜</span><span class="tag">オイモノ鼻</span><span class="tag">シロギス</span><span class="tag">カレイ</span></p><p>船�[...]
-      <div><h3>BBQの注意</h3><p>コンロ、炭、ガスなどの火器類は持ち込まず、現地の設備を利用します。鍋などの調理器具は持ち込み可能です。</p><div cla[...]
+      <div><h3>釣りポイント</h3><p><span class="tag">砂鉄の浜</span><span class="tag">オイモノ鼻</span><span class="tag">シロギス</span><span class="tag">カレイ</span></p><p>船酔いしやすい人は、無理せず足元に注意しながら楽しみましょう。</p></div>
+      <div><h3>BBQの注意</h3><p>コンロ、炭、ガスなどの火器類は持ち込まず、現地の設備を利用します。鍋などの調理器具は持ち込み可能です。</p><div class="notice">食材や飲み物は各自で調整しつつ、島内ルールを守って楽しみましょう。</div></div>
     </div>
   </section>
  
@@ -112,7 +112,7 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
       <div class="info"><small>FISHING RENTAL</small><strong>現地料金（2,500円）＋保証金2,000円（返却後に返金）</strong></div>
       <div class="info"><small>BBQ</small><strong>費用は別途</strong></div>
     </div>
-    <div class="notice"><b>金額は今後精査</b><br>上記は現時点の調査内容です。料金・決済方法・保証金は変更される可能性があるため、開催前に公式案内[...]
+    <div class="notice"><b>金額は今後精査</b><br>上記は現時点の調査内容です。料金・決済方法・保証金は変更される可能性があるため、開催前に公式案内を必ずご確認ください。</div>
  
     <div class="cols" style="margin-top:26px">
       <div>
@@ -125,7 +125,7 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
         </ul>
       </div>
       <div>
-        <h3>📱 猿島島内</h3>
+        <h3>���� 猿島島内</h3>
         <ul><li>PayPay利用可能</li></ul>
         <h3>💴 現金が必要なもの</h3>
         <p><b>釣り竿レンタル関連のみ現金</b></p>
@@ -202,8 +202,8 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
   function start(){cancelAnimationFrame(raf);running=true;score=0;life=3;remaining=45;items=[];player.x=410;last=performance.now();startAt=last;spawnClock=0;overlay.classList.add('hidden');shell.classList.remove('sirens');updateHud();loop(last)}
   function updateHud(){scoreEl.textContent=score;lifeEl.textContent=life>0?'♥ '.repeat(life).trim():'なし';timeEl.textContent=Math.max(0,Math.ceil(remaining))}
   function collide(a,b){return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y}
-  function hit(item){if(item.t.h){life-=item.t.h;alertEl.textContent=item.t.h===2?'大波に注意！':'トンビに気をつけて！';canvas.animate([{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240});}else{score+=item.t.v;alertEl.textContent=item.t.e==='🌭'?'ソーセージ確保！ ＋50':item.t.e==='🍺'?'冷えたビール確保！ ＋30':'ヒット！ 爆釣継続中！'}updateHud()}
-  function end(clear){running=false;cancelAnimationFrame(raf);shell.classList.remove('sirens');overlay.classList.remove('hidden');if(clear){const title=score>=500?'超爆釣馬場神、降臨！':'猿島BBQ成功！';overlayTitle.textContent=title;overlayText.textContent=`最終フェリーに間に合った！ 本日のスコアは ${score} 点。${score>=500?'伝説級の釣果です。':''}`;}else{overlayTitle.textContent='また次回のお楽しみ！';overlayText.textContent=`トンビと大波に阻まれた。スコアは ${score} 点でした。次はもっと爆釣を目指しましょう！`;}startBtn.textContent='もう一度挑戦'}
+  function hit(item){if(item.t.h){life-=item.t.h;alertEl.textContent=item.t.h===2?'大波直撃！！ 猿島危機一髪！':'BBQ食材流出！！ トンビ襲来！';canvas.animate([{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240});}else{score+=item.t.v;alertEl.textContent=item.t.e==='🌭'?'ソーセージ確保！ ＋50':item.t.e==='🍺'?'冷えたビール確保！ ＋30':'ヒット！ 爆釣継続中！'}updateHud()}
+  function end(clear){running=false;cancelAnimationFrame(raf);shell.classList.remove('sirens');overlay.classList.remove('hidden');if(clear){const title=score>=500?'超爆釣馬場神、降臨！':'猿島BBQ成功！';overlayTitle.textContent=title;overlayText.textContent=`最終フェリーに間に合った！ 本日のスコアは ${score} 点。${score>=500?'伝説級の釣果です。':''}`;}else{overlayTitle.textContent='猿島危機一髪…！';overlayText.textContent=`トンビと大波に阻まれた。スコアは ${score} 点。もう一度、爆釣に挑戦！`;}startBtn.textContent='もう一度挑戦'}
   function loop(now){if(!running)return;const dt=Math.min((now-last)/1000,.04);last=now;remaining=45-(now-startAt)/1000;if(keys.ArrowLeft||keys.a||keys.A)player.x-=player.speed*dt;if(keys.ArrowRight||keys.d||keys.D)player.x+=player.speed*dt;player.x=Math.max(8,Math.min(canvas.width-player.w-8,player.x));spawnClock+=dt;const urgency=remaining<10?.34:.52;if(spawnClock>urgency){spawn();spawnClock=0}for(const i of items)i.y+=i.t.s*dt*(remaining<10?1.35:1);items=items.filter(i=>{const b={x:i.x-i.size/2,y:i.y-i.size/2,w:i.size,h:i.size};if(collide(player,b)){hit(i);return false}return i.y<550});if(remaining<=10&&remaining>0){shell.classList.add('sirens');alertEl.textContent=`最終フェリー出航まであと ${Math.ceil(remaining)} 秒！！`}if(life<=0)return end(false);if(remaining<=0)return end(true);updateHud();draw();raf=requestAnimationFrame(loop)}
   function draw(){const g=ctx.createLinearGradient(0,0,0,500);g.addColorStop(0,'#85d8e7');g.addColorStop(.45,'#168bac');g.addColorStop(1,'#075a78');ctx.fillStyle=g;ctx.fillRect(0,0,900,500);ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.arc(110,110,46,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.14)';for(let i=0;i<6;i++)ctx.fillRect(60+i*140,430+i%2*8,120,18);ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle='#f0e3c2';ctx.fillRect(0,10,80,22);ctx.fillStyle='#d2b48c';ctx.beginPath();ctx.moveTo(12,10);ctx.lineTo(68,10);ctx.lineTo(56,0);ctx.lineTo(24,0);ctx.closePath();ctx.fill();ctx.fillStyle='#7a4d2a';ctx.fillRect(6,26,68,22);ctx.fillStyle='#2f7f3f';ctx.fillRect(0,0,80,11);ctx.restore();for(const i of items){ctx.save();ctx.translate(i.x,i.y);ctx.rotate(i.spin);ctx.font=`${i.size}px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i.t.e,0,0);ctx.restore()} }
   function bindHold(el,key){const on=e=>{e.preventDefault();keys[key]=true},off=e=>{e.preventDefault();keys[key]=false};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
