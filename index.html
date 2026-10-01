@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猿島 釣り＆BBQ 旅のしおり（暫定版）</title>
+<style>
+:root{
+  --navy:#092f4f; --blue:#126b8f; --aqua:#35b6bd; --sand:#f2dfb6;
+  --paper:#fffdf7; --ink:#173042; --danger:#e74645; --gold:#f6c453;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Yu Gothic UI","Yu Gothic",Meiryo,sans-serif;color:var(--ink);background:#eaf3f5;line-height:1.75}
+a{color:inherit}
+.hero{min-height:92vh;position:relative;overflow:hidden;display:grid;place-items:center;text-align:center;color:white;background:linear-gradient(155deg,#062940 0%,#0b5d78 48%,#42b9b5 100%)}
+.hero:before{content:"";position:absolute;inset:auto -10% -22% -10%;height:48%;background:rgba(255,255,255,.14);border-radius:50% 50% 0 0/28% 28% 0 0;transform:rotate(-3deg)}
+.hero:after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 75% 20%,rgba(255,255,255,.22),transparent 25%),linear-gradient(120deg,transparent 48%,rgba(255,255,255,.08) 49%,transparent 50%)}
+.hero-inner{position:relative;z-index:2;padding:34px 20px;max-width:900px}
+.kicker{display:inline-block;padding:7px 16px;border:1px solid rgba(255,255,255,.55);border-radius:999px;letter-spacing:.14em;font-size:.82rem;background:rgba(255,255,255,.1);backdrop-filter:blur(6px)}
+h1{font-size:clamp(2.5rem,8vw,5.8rem);line-height:1.05;margin:24px 0 14px;letter-spacing:.05em;text-shadow:0 9px 28px rgba(0,0,0,.27)}
+.hero p{font-size:clamp(1rem,2.5vw,1.35rem);margin:5px 0}.scroll{display:inline-block;margin-top:38px;text-decoration:none;padding:12px 22px;border-radius:999px;background:white;color:var(--navy);font-weight:700;box-shadow:0 9px 24px rgba(0,0,0,.18)}
+main{max-width:1080px;margin:-46px auto 0;position:relative;z-index:3;padding:0 20px 70px}
+.card{background:rgba(255,253,247,.97);border-radius:22px;padding:clamp(22px,4vw,42px);margin:22px 0;box-shadow:0 16px 45px rgba(9,47,79,.12);border:1px solid rgba(9,47,79,.08)}
+h2{margin:0 0 24px;color:var(--navy);font-size:clamp(1.55rem,3vw,2.2rem);display:flex;align-items:center;gap:12px}
+h2:after{content:"";height:3px;flex:1;background:linear-gradient(90deg,var(--aqua),transparent);border-radius:9px}
+.lead{font-size:1.08rem}.notice{background:#fff5d9;border-left:6px solid var(--gold);padding:15px 18px;border-radius:5px 14px 14px 5px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.info{background:#edf7f7;border-radius:15px;padding:17px}.info small{display:block;color:#4f6f7d;font-weight:700}.info strong{font-size:1.08rem;color:var(--navy)}
+.timeline{position:relative;margin-left:12px}.timeline:before{content:"";position:absolute;left:12px;top:8px;bottom:8px;width:3px;background:linear-gradient(var(--aqua),var(--blue))}.step{display:grid;grid-template-columns:34px 100px 1fr;gap:10px;align-items:start;margin:18px 0}.dot{width:26px;height:26px;border:6px solid #d8f2f1;background:var(--blue);border-radius:50%;z-index:1}.time{font-weight:800;color:var(--blue)}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:28px}.checklist{list-style:none;padding:0;margin:0}.checklist li{padding:9px 0;border-bottom:1px dashed #cbdadd}.checklist li:before{content:"□";font-weight:bold;color:var(--blue);margin-right:10px}.tag{display:inline-block;background:var(--navy);color:#fff;padding:5px 12px;border-radius:999px;margin:3px;font-size:.9rem}
+.game-wrap{background:linear-gradient(180deg,#071c2c,#123f55);color:white;border-radius:25px;padding:clamp(18px,3vw,30px);overflow:hidden;box-shadow:0 25px 55px rgba(0,0,0,.25)}
+.game-head{text-align:center}.game-head h2{justify-content:center;color:white;margin-bottom:4px}.game-head h2:after{display:none}.game-title{font-size:clamp(2rem,6vw,4rem);font-weight:1000;line-height:1.05;color:#ffda63;text-shadow:0 3px 0 #b8422e,0 7px 18px #000;margin:8px 0}.subtitle{font-weight:900;letter-spacing:.08em;color:#ff8b75}.game-hud{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:18px auto 10px;max-width:900px}.hud-item{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px;text-align:center}.hud-item b{display:block;font-size:1.25rem;color:#ffe47e}
+.canvas-shell{position:relative;max-width:900px;margin:auto;border:3px solid rgba(255,255,255,.24);border-radius:17px;overflow:hidden;background:#0e7795;box-shadow:inset 0 0 35px rgba(0,0,0,.38)}
+canvas{display:block;width:100%;height:auto;touch-action:none}.overlay{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:24px;background:rgba(3,18,29,.73);backdrop-filter:blur(4px);transition:.25s}.overlay.hidden{opacity:0;pointer-events:none}.overlay h3{font-size:clamp(1.7rem,5vw,3.2rem);margin:0 0 8px;color:#ffe06a}.overlay p{max-width:610px;margin:8px auto 18px}.btn{border:0;border-radius:999px;padding:13px 24px;font:inherit;font-weight:900;cursor:pointer;background:linear-gradient(#ffdf68,#f1a52b);color:#392500;box-shadow:0 7px 0 #a95d19,0 12px 20px rgba(0,0,0,.3)}.btn:active{transform:translateY(5px);box-shadow:0 2px 0 #a95d19}.controls{display:flex;justify-content:center;gap:18px;margin-top:14px}.move{width:90px;height:54px;border:1px solid rgba(255,255,255,.28);border-radius:16px;background:rgba(255,255,255,.12);color:#fff;font-size:1.8rem;font-weight:bold;touch-action:none}.legend{text-align:center;margin-top:16px;color:#c4dae2;font-size:.92rem}.alert{height:32px;text-align:center;color:#ffdf68;font-weight:1000;font-size:clamp(.9rem,2.5vw,1.2rem);letter-spacing:.04em;margin-top:8px}.sirens{animation:siren .35s infinite alternate}@keyframes siren{from{box-shadow:inset 0 0 0 4px rgba(255,39,39,.2)}to{box-shadow:inset 0 0 40px 13px rgba(255,39,39,.65)}}
+footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
+@media(max-width:700px){.grid,.cols{grid-template-columns:1fr}.step{grid-template-columns:34px 75px 1fr}.card{border-radius:16px}.hero{min-height:75vh}.game-hud{grid-template-columns:repeat(3,1fr)}.hud-item{font-size:.76rem}.hud-item b{font-size:1rem}}
+@media print{.hero{min-height:auto;padding:70px 20px}main{margin:0}.game-wrap{break-before:page}.controls,.scroll{display:none}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="hero-inner">
+    <span class="kicker">SARUSHIMA DAY TRIP GUIDE</span>
+    <h1>猿島<br>釣り＆BBQ</h1>
+    <p><strong>旅のしおり（暫定版）</strong></p>
+    <p>海と魚と炭火を楽しむ、大人の遠足。</p>
+    <a class="scroll" href="#guide">しおりを開く ↓</a>
+  </div>
+</header>
+<main id="guide">
+  <section class="card">
+    <h2>ごあいさつ</h2>
+    <p class="lead">秋の釣りシーズン到来。横須賀沖に浮かぶ猿島で、のんびり釣りとBBQを楽しみましょう。釣る人、食べる人、島を歩く人、それぞれのペースで参加できる企画です。</p>
+    <div class="notice"><b>基本方針：</b>安全第一、現地集合、コアタイム内の出入り自由。天候や海況に合わせて柔軟に楽しみます。</div>
+  </section>
+ 
+  <section class="card">
+    <h2>イベント概要</h2>
+    <div class="grid">
+      <div class="info"><small>EVENT</small><strong>猿島 釣り＆BBQ</strong></div>
+      <div class="info"><small>PLACE</small><strong>猿島（横須賀・三笠ターミナルからフェリー）</strong></div>
+      <div class="info"><small>STYLE</small><strong>現地集合・自由解散</strong></div>
+      <div class="info"><small>CORE TIME</small><strong>10:00 ～ 14:00</strong></div>
+    </div>
+  </section>
+ 
+  <section class="card">
+    <h2>当日の流れ</h2>
+    <div class="timeline">
+      <div class="step"><i class="dot"></i><div class="time">朝</div><div>横須賀方面へ集合。三笠ターミナルからフェリーで猿島へ。</div></div>
+      <div class="step"><i class="dot"></i><div class="time">10:00</div><div>コアタイム開始。砂鉄の浜や磯場で釣りを楽しみます。</div></div>
+      <div class="step"><i class="dot"></i><div class="time">昼ごろ</div><div>BBQ開始。食材は持ち込み、火器類は現地調達。</div></div>
+      <div class="step"><i class="dot"></i><div class="time">14:00</div><div>コアタイム終了。その後は追加の釣り、島内散策、自由解散。</div></div>
+    </div>
+    <div class="notice">正確な集合時刻、フェリー便、予約内容は、開催前の最終案内を確認してください。</div>
+  </section>
+ 
+  <section class="card">
+    <h2>釣りとBBQ</h2>
+    <div class="cols">
+      <div><h3>釣りポイント</h3><p><span class="tag">砂鉄の浜</span><span class="tag">オイモノ鼻</span><span class="tag">シロギス</span><span class="tag">カレイ</span></p><p>船着き場近くのサーフと、島の裏手にある磯場が候補。初心者は足場のよい場所から無理なく楽しみましょう。</p></div>
+      <div><h3>BBQの注意</h3><p>コンロ、炭、ガスなどの火器類は持ち込まず、現地の設備を利用します。鍋などの調理器具は持ち込み可能です。</p><div class="notice"><b>トンビ注意！</b> 食材を出したままにせず、必要に応じてパラソルも活用。</div></div>
+    </div>
+  </section>
+ 
+  <section class="card">
+    <h2>持ち物チェック</h2>
+    <div class="cols">
+      <ul class="checklist"><li>帽子・日焼け対策</li><li>飲み物</li><li>タオル</li><li>動きやすく濡れてもよい服装</li><li>滑りにくい靴</li></ul>
+      <ul class="checklist"><li>釣り道具（持参する人）</li><li>クーラーボックス</li><li>酔い止め（必要な人）</li><li>BBQ食材</li><li>ごみを持ち帰る袋</li></ul>
+    </div>
+  </section>
+ 
+  <section class="card">
+    <h2>費用・支払い方法</h2>
+    <div class="grid">
+      <div class="info"><small>FERRY</small><strong>フェリー往復乗船料 1,800円</strong></div>
+      <div class="info"><small>ENTRANCE</small><strong>猿島公園入園料 500円</strong></div>
+      <div class="info"><small>FISHING RENTAL</small><strong>現地料金（2,500円）＋保証金1,000円（返却後に返金）</strong></div>
+      <div class="info"><small>BBQ</small><strong>費用は別途</strong></div>
+    </div>
+    <div class="notice"><b>金額は今後精査</b><br>上記は現時点の調査内容です。料金・決済方法・保証金は変更される可能性があるため、開催前に公式案内で再確認してください。</div>
+ 
+    <div class="cols" style="margin-top:26px">
+      <div>
+        <h3>💳 フェリー乗船料・入園料</h3>
+        <ul>
+          <li>クレジットカード利用可能</li>
+          <li>交通系IC利用可能</li>
+          <li>各種電子マネー利用可能</li>
+          <li>各種電子決済に対応</li>
+        </ul>
+      </div>
+      <div>
+        <h3>📱 猿島島内</h3>
+        <ul><li>PayPay利用可能</li></ul>
+        <h3>💴 現金が必要なもの</h3>
+        <p><b>釣り竿レンタル関連のみ現金</b></p>
+        <ul>
+          <li>現地料金（2,500円）</li>
+          <li>保証金1,000円（返却後に返金）</li>
+        </ul>
+      </div>
+    </div>
+ 
+    <h3>持参推奨</h3>
+    <ul>
+      <li>PayPayなどのキャッシュレス決済手段</li>
+      <li>釣り竿をレンタルする場合は、現金を持参</li>
+      <li>レンタルしない場合も、予備の現金を少額持参</li>
+    </ul>
+ 
+    <h3>参考リンク</h3>
+    <ul>
+      <li><a href=https://sarushima.jp/information/ target="_blank" rel="noopener noreferrer">フェリー時刻・料金・アクセス・島内施設</a></li>
+      <li><a href=https://sarushima.jp/ target="_blank" rel="noopener noreferrer">猿島オフィシャルサイト</a></li>
+      <li><a href=https://sarushima.jp/news/detail/?post=80 target="_blank" rel="noopener noreferrer">乗船料・入園料のキャッシュレス決済案内</a></li>
+      <li><a href=https://sarushima.jp/bbq/ target="_blank" rel="noopener noreferrer">猿島BBQ情報</a></li>
+    </ul>
+  </section>
+ 
+  <section class="game-wrap" id="game">
+    <div class="game-head">
+      <div class="subtitle">SARUSHIMA PANIC FISHING</div>
+      <div class="game-title">爆釣馬場君</div>
+      <h2>猿島危機一髪！</h2>
+      <p>魚を釣り上げ、トンビと大波をかわし、最終フェリーまで生き残れ！</p>
+    </div>
+    <div class="game-hud">
+      <div class="hud-item">SCORE<b id="score">0</b></div>
+      <div class="hud-item">LIFE<b id="life">♥ ♥ ♥</b></div>
+      <div class="hud-item">TIME<b id="time">45</b></div>
+    </div>
+    <div class="alert" id="alert">左右キー / A・D / 画面ボタンで移動</div>
+    <div class="canvas-shell" id="shell">
+      <canvas id="gameCanvas" width="900" height="500" aria-label="爆釣馬場君ゲーム画面"></canvas>
+      <div class="overlay" id="overlay">
+        <h3 id="overlayTitle">出航準備よし！</h3>
+        <p id="overlayText">魚は得点、ビールとソーセージはボーナス。トンビと大波に当たるとライフが減ります。45秒耐えればBBQ成功！</p>
+        <button class="btn" id="startBtn">ゲーム開始</button>
+      </div>
+    </div>
+    <div class="controls"><button class="move" id="leftBtn" aria-label="左へ移動">◀</button><button class="move" id="rightBtn" aria-label="右へ移動">▶</button></div>
+    <div class="legend">🐟 +10　🐠 +20　🍺 +30　🌭 +50　🦅 LIFE -1　🌊 LIFE -2</div>
+  </section>
+</main>
+<footer>猿島 釣り＆BBQ 旅のしおり ｜ 安全第一で楽しい一日を</footer>
+<script>
+(() => {
+  const canvas = document.getElementById('gameCanvas');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const lifeEl = document.getElementById('life');
+  const timeEl = document.getElementById('time');
+  const alertEl = document.getElementById('alert');
+  const overlay = document.getElementById('overlay');
+  const overlayTitle = document.getElementById('overlayTitle');
+  const overlayText = document.getElementById('overlayText');
+  const startBtn = document.getElementById('startBtn');
+  const shell = document.getElementById('shell');
+  let running=false, score=0, life=3, remaining=45, items=[], keys={}, last=0, spawnClock=0, startAt=0, raf;
+  const player={x:410,y:420,w:80,h:52,speed:410};
+  const types=[
+    {e:'🐟',v:10,h:0,p:.38,s:130},{e:'🐠',v:20,h:0,p:.18,s:155},{e:'🍺',v:30,h:0,p:.08,s:170},{e:'🌭',v:50,h:0,p:.06,s:180},
+    {e:'🦅',v:0,h:1,p:.22,s:205},{e:'🌊',v:0,h:2,p:.08,s:235}
+  ];
+  function pick(){let r=Math.random(),a=0;for(const t of types){a+=t.p;if(r<=a)return t}return types[0]}
+  function spawn(){const t=pick();items.push({x:35+Math.random()*830,y:-45,t,size:t.e==='🌊'?52:38,spin:(Math.random()-.5)*1.5})}
+  function start(){cancelAnimationFrame(raf);running=true;score=0;life=3;remaining=45;items=[];player.x=410;last=performance.now();startAt=last;spawnClock=0;overlay.classList.add('hidden');shell.classList.remove('sirens');updateHud();alertEl.textContent='爆釣開始！ 魚を逃すな！';raf=requestAnimationFrame(loop)}
+  function updateHud(){scoreEl.textContent=score;lifeEl.textContent=life>0?'♥ '.repeat(life).trim():'なし';timeEl.textContent=Math.max(0,Math.ceil(remaining))}
+  function collide(a,b){return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y}
+  function hit(item){if(item.t.h){life-=item.t.h;alertEl.textContent=item.t.h===2?'大波直撃！！ 猿島危機一髪！':'BBQ食材流出！！ トンビ襲来！';canvas.animate([{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240});}else{score+=item.t.v;alertEl.textContent=item.t.e==='🌭'?'ソーセージ確保！ ＋50':item.t.e==='🍺'?'冷えたビール確保！ ＋30':'ヒット！ 爆釣継続中！'}updateHud()}
+  function end(clear){running=false;cancelAnimationFrame(raf);shell.classList.remove('sirens');overlay.classList.remove('hidden');if(clear){const title=score>=500?'超爆釣馬場神、降臨！':'猿島BBQ成功！';overlayTitle.textContent=title;overlayText.textContent=`最終フェリーに間に合った！ 本日のスコアは ${score} 点。${score>=500?'伝説級の釣果です。':''}`;}else{overlayTitle.textContent='猿島危機一髪…！';overlayText.textContent=`トンビと大波に阻まれた。スコアは ${score} 点。もう一度、爆釣に挑戦！`;}startBtn.textContent='もう一度挑戦'}
+  function loop(now){if(!running)return;const dt=Math.min((now-last)/1000,.04);last=now;remaining=45-(now-startAt)/1000;if(keys.ArrowLeft||keys.a||keys.A)player.x-=player.speed*dt;if(keys.ArrowRight||keys.d||keys.D)player.x+=player.speed*dt;player.x=Math.max(8,Math.min(canvas.width-player.w-8,player.x));spawnClock+=dt;const urgency=remaining<10?.34:.52;if(spawnClock>urgency){spawn();spawnClock=0}for(const i of items)i.y+=i.t.s*dt*(remaining<10?1.35:1);items=items.filter(i=>{const b={x:i.x-i.size/2,y:i.y-i.size/2,w:i.size,h:i.size};if(collide(player,b)){hit(i);return false}return i.y<550});if(remaining<=10&&remaining>0){shell.classList.add('sirens');alertEl.textContent=`最終フェリー出航まであと ${Math.ceil(remaining)} 秒！！`}if(life<=0)return end(false);if(remaining<=0)return end(true);updateHud();draw();raf=requestAnimationFrame(loop)}
+  function draw(){const g=ctx.createLinearGradient(0,0,0,500);g.addColorStop(0,'#85d8e7');g.addColorStop(.45,'#168bac');g.addColorStop(1,'#075a78');ctx.fillStyle=g;ctx.fillRect(0,0,900,500);ctx.fillStyle='rgba(255,255,255,.28)';for(let y=60;y<390;y+=65){ctx.fillRect((y*7+performance.now()/20)%900, y, 135, 3)}ctx.fillStyle='#e7c576';ctx.fillRect(0,476,900,24);ctx.font='34px sans-serif';ctx.textAlign='center';for(const i of items){ctx.save();ctx.translate(i.x,i.y);ctx.rotate(i.spin*Math.sin(i.y/70));ctx.fillText(i.t.e,0,0);ctx.restore()}ctx.save();ctx.translate(player.x+player.w/2,player.y+player.h/2);ctx.font='42px sans-serif';ctx.fillText('🎣',0,5);ctx.font='16px sans-serif';ctx.fillStyle='#fff';ctx.fillText('馬場君',0,28);ctx.restore()}
+  function bindHold(el,key){const on=e=>{e.preventDefault();keys[key]=true},off=e=>{e.preventDefault();keys[key]=false};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointerleave',off);el.addEventListener('pointercancel',off)}
+  addEventListener('keydown',e=>{keys[e.key]=true;if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault()});addEventListener('keyup',e=>keys[e.key]=false);bindHold(document.getElementById('leftBtn'),'ArrowLeft');bindHold(document.getElementById('rightBtn'),'ArrowRight');startBtn.addEventListener('click',start);draw();
+})();
+</script>
+</body>
+</html>
