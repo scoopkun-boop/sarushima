@@ -138,6 +138,43 @@ canvas {
   backdrop-filter: blur(4px);
   transition: opacity .25s;
 }
+
+.ending-scene {
+  display: none;
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  pointer-events: none;
+}
+
+.overlay.ending-clear .ending-scene,
+.overlay.ending-fail .ending-scene,
+.overlay.ending-ready .ending-scene {
+  display: block;
+}
+
+.overlay.ending-ready {
+  justify-content: flex-end;
+  padding: 10px;
+  background: linear-gradient(180deg, rgba(3, 18, 29, .04), rgba(3, 18, 29, .5));
+}
+
+.overlay.ending-ready .ending-copy {
+  margin-top: auto;
+  padding: 10px 14px 8px;
+  background: linear-gradient(180deg, transparent, rgba(3, 18, 29, .58) 22%);
+}
+
+.overlay.ending-ready .ending-copy h3 {
+  margin: 0 0 4px;
+}
+
+.overlay.ending-ready .ending-copy p {
+  margin: 4px auto 10px;
+}
  
 .overlay.hidden {
   opacity: 0;
@@ -248,6 +285,74 @@ canvas {
   .move {
     width: min(38vw, 140px);
   }
+}
+
+.overlay.ending-clear {
+  background: linear-gradient(180deg, rgba(3, 18, 29, .22), rgba(3, 18, 29, .62));
+}
+
+.overlay.ending-fail {
+  background: linear-gradient(180deg, rgba(35, 8, 13, .28), rgba(20, 10, 18, .68));
+}
+
+.overlay.ending-fail h3 {
+  color: #ffb3a3;
+}
+
+.overlay.ending-clear,
+.overlay.ending-fail {
+  justify-content: flex-end;
+  padding: 10px;
+}
+
+.ending-copy {
+  position: relative;
+  z-index: 11;
+  width: 100%;
+  margin-top: auto;
+  padding: 10px 14px 8px;
+  background: linear-gradient(180deg, transparent, rgba(3, 18, 29, .58) 22%);
+}
+
+.overlay.ending-clear .ending-copy h3,
+.overlay.ending-fail .ending-copy h3 {
+  margin: 0 0 4px;
+  font-size: clamp(1.4rem, 3.5vw, 2.4rem);
+}
+
+.overlay.ending-clear .ending-copy p,
+.overlay.ending-fail .ending-copy p {
+  max-width: 760px;
+  margin: 4px auto 10px;
+  font-size: clamp(.72rem, 1.6vw, .95rem);
+  line-height: 1.35;
+}
+
+.ending-preview-controls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.ending-preview-btn {
+  padding: 9px 16px;
+  color: #e6f5f8;
+  font-weight: 700;
+  cursor: pointer;
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 999px;
+}
+
+.ending-preview-btn:hover {
+  background: rgba(255, 255, 255, .2);
+}
+
+.ending-preview-btn:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
 }
 
 </style>
@@ -387,15 +492,23 @@ canvas {
     <canvas id="gameCanvas" width="900" height="500" aria-label="爆釣馬場君ゲーム画面"></canvas>
  
     <div class="overlay" id="overlay">
-      <h3 id="overlayTitle">出航準備よし！</h3>
-      <p id="overlayText">魚は得点、ビールとソーセージはボーナス。トンビと大波に当たるとライフが減ります。45秒耐えればBBQ成功！</p>
-      <button class="btn" id="startBtn" type="button">ゲーム開始</button>
+      <canvas class="ending-scene" id="endingCanvas" width="900" height="500" aria-hidden="true"></canvas>
+      <div class="ending-copy">
+        <h3 id="overlayTitle">出航準備よし！</h3>
+        <p id="overlayText">魚は得点、ビールとソーセージはボーナス。トンビと大波に当たるとライフが減ります。45秒耐えればBBQ成功！</p>
+        <button class="btn" id="startBtn" type="button">ゲーム開始</button>
+      </div>
     </div>
   </div>
  
   <div class="controls">
     <button class="move" id="leftBtn" type="button" aria-label="左へ移動">◀</button>
     <button class="move" id="rightBtn" type="button" aria-label="右へ移動">▶</button>
+  </div>
+
+  <div class="ending-preview-controls" aria-label="エンディング演出のプレビュー">
+    <button class="ending-preview-btn" id="clearPreviewBtn" type="button">クリア演出を見る</button>
+    <button class="ending-preview-btn" id="failPreviewBtn" type="button">失敗演出を見る</button>
   </div>
  
   <div class="legend">🐟 +10　🐠 +20　🍺 +30　🌭 +50　🦅 LIFE -1　🌊 LIFE -2</div>
@@ -408,6 +521,8 @@ canvas {
  
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
+  const endingCanvas = document.getElementById('endingCanvas');
+  const endingCtx = endingCanvas.getContext('2d');
   const scoreEl = document.getElementById('score');
   const lifeEl = document.getElementById('life');
   const timeEl = document.getElementById('time');
@@ -419,6 +534,8 @@ canvas {
   const shell = document.getElementById('shell');
   const leftBtn = document.getElementById('leftBtn');
   const rightBtn = document.getElementById('rightBtn');
+  const clearPreviewBtn = document.getElementById('clearPreviewBtn');
+  const failPreviewBtn = document.getElementById('failPreviewBtn');
  
   let running = false;
   let score = 0;
@@ -430,6 +547,11 @@ canvas {
   let spawnClock = 0;
   let startAt = 0;
   let raf = 0;
+  let endingRaf = 0;
+  let readyRaf = 0;
+  let endingStartedAt = 0;
+  let endingType = null;
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
  
   const player = {
     x: 410,
@@ -480,6 +602,11 @@ canvas {
  
   function start() {
     cancelAnimationFrame(raf);
+    cancelAnimationFrame(endingRaf);
+    cancelAnimationFrame(readyRaf);
+    endingRaf = 0;
+    readyRaf = 0;
+    endingType = null;
  
     running = true;
     score = 0;
@@ -493,6 +620,8 @@ canvas {
     spawnClock = 0;
  
     overlay.classList.add('hidden');
+    overlay.classList.remove('ending-ready', 'ending-clear', 'ending-fail');
+    endingCtx.clearRect(0, 0, endingCanvas.width, endingCanvas.height);
     shell.classList.remove('sirens');
     alertEl.textContent = '爆釣開始！ 魚を逃すな！';
     updateHud();
@@ -542,7 +671,13 @@ canvas {
   function end(clear) {
     running = false;
     cancelAnimationFrame(raf);
+    cancelAnimationFrame(readyRaf);
+    readyRaf = 0;
+    cancelAnimationFrame(endingRaf);
+    endingRaf = 0;
+    endingType = null;
     shell.classList.remove('sirens');
+    overlay.classList.remove('ending-ready', 'ending-clear', 'ending-fail');
     overlay.classList.remove('hidden');
  
     if (clear) {
@@ -586,6 +721,27 @@ canvas {
     }
  
     startBtn.textContent = 'もう一度挑戦';
+    items = [];
+    endingType = clear ? 'clear' : 'fail';
+    endingStartedAt = performance.now();
+    overlay.classList.add(`ending-${endingType}`);
+
+    if (prefersReducedMotion) {
+      drawEnding(endingStartedAt);
+    } else {
+      endingRaf = requestAnimationFrame(drawEnding);
+    }
+  }
+
+  function previewEnding(clear) {
+    cancelAnimationFrame(raf);
+    running = false;
+    keys = Object.create(null);
+    score = 0;
+    life = clear ? 3 : 0;
+    remaining = clear ? 45 : 0;
+    updateHud();
+    end(clear);
   }
  
   function loop(now) {
@@ -682,7 +838,7 @@ canvas {
       ctx.restore();
     }
  
-    if (remaining <= 10) {
+    if (remaining <= 10 && !endingType) {
       ctx.font = '90px sans-serif';
       ctx.fillText('⛴️', 760, 420);
  
@@ -702,6 +858,270 @@ canvas {
     ctx.fillStyle = '#fff';
     ctx.fillText('馬場君', 0, 28);
     ctx.restore();
+  }
+
+  function drawEnding(now) {
+    if (!endingType) return;
+
+    const elapsed = Math.min((now - endingStartedAt) / 1000, 6);
+    endingCtx.clearRect(0, 0, endingCanvas.width, endingCanvas.height);
+    endingCtx.save();
+    endingCtx.textAlign = 'center';
+    endingCtx.textBaseline = 'middle';
+
+    const drawEmoji = (emoji, x, y, size, rotation = 0) => {
+      endingCtx.save();
+      endingCtx.translate(x, y);
+      endingCtx.rotate(rotation);
+      endingCtx.font = `${size}px sans-serif`;
+      endingCtx.fillText(emoji, 0, 0);
+      endingCtx.restore();
+    };
+
+    if (endingType === 'clear') {
+      const sky = endingCtx.createLinearGradient(0, 0, 0, 500);
+      sky.addColorStop(0, 'rgba(15, 61, 100, .12)');
+      sky.addColorStop(1, 'rgba(255, 188, 68, .22)');
+      endingCtx.fillStyle = sky;
+      endingCtx.fillRect(0, 0, 900, 500);
+
+      // Colorful fireworks burst above the celebration.
+      const fireworks = [
+        { x: 175, y: 105, phase: 0 },
+        { x: 450, y: 70, phase: 1.1 },
+        { x: 725, y: 115, phase: 2.2 }
+      ];
+      const fireworkColors = ['#fff176', '#ff80ab', '#80deea', '#b9f6ca', '#ffffff'];
+      for (const burst of fireworks) {
+        const phase = (elapsed * 1.15 + burst.phase) % 2.8;
+        const radius = 18 + Math.sin(phase / 2.8 * Math.PI) * 72;
+        endingCtx.globalAlpha = Math.max(.18, 1 - phase / 3.2);
+        for (let i = 0; i < 14; i++) {
+          const angle = (Math.PI * 2 * i) / 14 + burst.phase;
+          const x = burst.x + Math.cos(angle) * radius;
+          const y = burst.y + Math.sin(angle) * radius;
+          endingCtx.strokeStyle = fireworkColors[(i + Math.floor(burst.phase)) % fireworkColors.length];
+          endingCtx.lineWidth = 4;
+          endingCtx.beginPath();
+          endingCtx.moveTo(burst.x + Math.cos(angle) * (radius - 13), burst.y + Math.sin(angle) * (radius - 13));
+          endingCtx.lineTo(x, y);
+          endingCtx.stroke();
+          endingCtx.fillStyle = endingCtx.strokeStyle;
+          endingCtx.beginPath();
+          endingCtx.arc(x, y, 4, 0, Math.PI * 2);
+          endingCtx.fill();
+        }
+      }
+
+      endingCtx.globalAlpha = 1;
+
+      // Diamonds, plain banknotes, and fish dishes tumble down across the scene.
+      const fishDishes = ['🍣', '🐟', '🍦'];
+      for (let i = 0; i < 34; i++) {
+        const x = (i * 97 + Math.sin(elapsed * 1.7 + i) * 36 + 900) % 900;
+        const y = ((i * 83 + elapsed * (125 + (i % 5) * 22)) % 560) - 25;
+        const rotation = Math.sin(elapsed * 2.4 + i * 1.8) * .65;
+        const size = 30 + (i % 3) * 5;
+        if (i % 5 === 0) {
+          drawEmoji('💵', x, y, size, rotation);
+        } else if (i % 3 === 0) {
+          drawEmoji('💎', x, y, size, rotation);
+        } else {
+          drawEmoji(fishDishes[i % fishDishes.length], x, y, size, rotation);
+        }
+      }
+
+      // Food and drinks join the shower of celebratory cash.
+      const treats = ['🍺', '🌭', '🍖', '🥤', '🍦', '🍗'];
+      for (let i = 0; i < 18; i++) {
+        const x = (i * 151 + Math.sin(elapsed * 1.4 + i * 2) * 48 + 900) % 900;
+        const y = ((i * 109 + elapsed * (90 + (i % 4) * 17)) % 570) - 35;
+        const rotation = Math.sin(elapsed * 2 + i) * .38;
+        drawEmoji(treats[i % treats.length], x, y, 32 + (i % 3) * 5, rotation);
+      }
+
+      // Ferry, BBQ and a row of friends laughing together.
+      drawEmoji('⛴️', 735 - Math.min(elapsed * 9, 45), 160, 106);
+      drawEmoji('🍖🍺', 735, 250, 53);
+      drawEmoji('🧔😄', 445 + Math.sin(elapsed * 4) * 4, 170, 78);
+      drawEmoji('😆', 340, 185 + Math.sin(elapsed * 5) * 5, 64);
+      drawEmoji('😂', 535, 184 + Math.sin(elapsed * 4 + 1) * 5, 64);
+      drawEmoji('😊', 630, 196 + Math.sin(elapsed * 4 + 2) * 4, 56);
+      drawEmoji('🎣🐟', 225, 220 + Math.sin(elapsed * 3) * 8, 58);
+      drawEmoji('🎉', 305, 260 + Math.sin(elapsed * 4) * 8, 44);
+      drawEmoji('✨', 575, 255 + Math.cos(elapsed * 3) * 8, 38);
+    } else {
+      const storm = endingCtx.createLinearGradient(0, 0, 0, 500);
+      storm.addColorStop(0, 'rgba(18, 31, 54, .2)');
+      storm.addColorStop(1, 'rgba(8, 25, 48, .55)');
+      endingCtx.fillStyle = storm;
+      endingCtx.fillRect(0, 0, 900, 500);
+
+      // Wind-driven rain.
+      endingCtx.strokeStyle = 'rgba(210, 242, 255, .78)';
+      endingCtx.lineWidth = 3;
+      for (let i = 0; i < 36; i++) {
+        const x = (i * 37 + elapsed * 115) % 940;
+        const y = (i * 53 + elapsed * 160) % 430;
+        endingCtx.beginPath();
+        endingCtx.moveTo(x, y);
+        endingCtx.lineTo(x - 18, y + 38);
+        endingCtx.stroke();
+      }
+
+      drawEmoji('☁️', 210, 88, 78);
+      drawEmoji('☁️', 315, 105, 66);
+
+      // The raised wave forms the foreground; draw the fisherman and hawk on top
+      // afterward so their expressions and pecking interaction stay visible.
+      const peck = Math.sin(elapsed * 8);
+      const birdX = 475 + peck * 20;
+      const birdY = 76 + Math.max(0, peck) * 38;
+      // A large wave rises to the fisherman's position instead of staying at the
+      // bottom edge of the scene.
+      const waveY = 235 - Math.min(elapsed * 8, 32) + Math.sin(elapsed * 3.5) * 8;
+      endingCtx.fillStyle = 'rgba(27, 146, 190, .9)';
+      endingCtx.beginPath();
+      endingCtx.moveTo(0, waveY);
+      endingCtx.quadraticCurveTo(145, waveY - 63, 300, waveY - 12);
+      endingCtx.quadraticCurveTo(480, waveY + 31, 620, waveY - 15);
+      endingCtx.quadraticCurveTo(770, waveY - 72, 900, waveY - 28);
+      endingCtx.lineTo(900, 500);
+      endingCtx.lineTo(0, 500);
+      endingCtx.closePath();
+      endingCtx.fill();
+
+      drawEmoji('🌊', 150 + Math.sin(elapsed * 3) * 17, waveY - 12, 58);
+      drawEmoji('🌊', 730 + Math.cos(elapsed * 2.5) * 14, waveY - 24, 62);
+
+      // Baban-kun cries and recoils while the hawk swoops down to peck his cap.
+      drawEmoji('🦅', birdX, birdY, 116, -.08 + peck * .08);
+      drawEmoji('🎣', 420, 125 + Math.max(0, peck) * 5, 76);
+      drawEmoji('😭', 420, 178 + Math.max(0, peck) * 4, 74);
+      drawEmoji('💧', 365 + Math.sin(elapsed * 11) * 9, 170, 30, -.4);
+      drawEmoji('💧', 475 + Math.cos(elapsed * 10) * 8, 174, 27, .35);
+
+      if (Math.max(0, peck) > .82) {
+        drawEmoji('💥', 450, 117, 40);
+      }
+
+      drawEmoji('⛴️', Math.min(850, 650 + elapsed * 36), 265, 76);
+    }
+
+    endingCtx.restore();
+
+    if (elapsed < 6 && !prefersReducedMotion) {
+      endingRaf = requestAnimationFrame(drawEnding);
+    } else {
+      endingRaf = 0;
+    }
+  }
+
+  function drawReady(now) {
+    if (!overlay.classList.contains('ending-ready')) return;
+
+    const time = now / 1000;
+    endingCtx.clearRect(0, 0, endingCanvas.width, endingCanvas.height);
+    const sky = endingCtx.createLinearGradient(0, 0, 0, endingCanvas.height);
+    sky.addColorStop(0, '#9be2ee');
+    sky.addColorStop(.58, '#39a9be');
+    sky.addColorStop(1, '#0b6687');
+    endingCtx.fillStyle = sky;
+    endingCtx.fillRect(0, 0, endingCanvas.width, endingCanvas.height);
+
+    endingCtx.fillStyle = 'rgba(255, 239, 175, .9)';
+    endingCtx.beginPath();
+    endingCtx.arc(735, 95, 42, 0, Math.PI * 2);
+    endingCtx.fill();
+
+    endingCtx.strokeStyle = 'rgba(255, 255, 255, .48)';
+    endingCtx.lineWidth = 4;
+    for (let i = 0; i < 6; i++) {
+      const x = (i * 175 + time * 34) % 1000 - 50;
+      const y = 300 + (i % 3) * 35;
+      endingCtx.beginPath();
+      endingCtx.moveTo(x, y);
+      endingCtx.quadraticCurveTo(x + 45, y - 10, x + 90, y);
+      endingCtx.stroke();
+    }
+
+    endingCtx.fillStyle = '#e7c576';
+    endingCtx.fillRect(0, 465, 900, 35);
+
+    const drawEmoji = (emoji, x, y, size, rotation = 0) => {
+      endingCtx.save();
+      endingCtx.translate(x, y);
+      endingCtx.rotate(rotation);
+      endingCtx.font = `${size}px sans-serif`;
+      endingCtx.textAlign = 'center';
+      endingCtx.textBaseline = 'middle';
+      endingCtx.fillText(emoji, 0, 0);
+      endingCtx.restore();
+    };
+
+    // Show the Sarushima ferry in the upper-left background, above Baban-kun.
+    drawEmoji('🛳️', 92, 108 + Math.sin(time * 1.5) * 3, 88);
+    endingCtx.fillStyle = 'rgba(255, 255, 255, .92)';
+    endingCtx.font = 'bold 16px sans-serif';
+    endingCtx.textAlign = 'center';
+    endingCtx.fillText('猿島行き', 92, 153);
+
+    // Baban-kun waits by the shore, fishing rod in hand.
+    const bob = Math.sin(time * 3) * 5;
+    endingCtx.fillStyle = 'rgba(255, 255, 255, .9)';
+    endingCtx.font = 'bold 20px sans-serif';
+    endingCtx.textAlign = 'center';
+    endingCtx.fillText('馬場君', 335, 143 + bob);
+    drawEmoji('🧔', 335, 190 + bob, 72);
+    drawEmoji('👕', 335, 245 + bob, 68);
+    drawEmoji('🎣', 399, 220 + Math.sin(time * 2) * 8, 68, -.22);
+    drawEmoji('🎒', 205, 258 + Math.sin(time * 2.2) * 3, 62);
+
+    const floatX = 490 + Math.sin(time * 1.8) * 35;
+    const floatY = 165 + Math.sin(time * 3) * 9;
+    endingCtx.strokeStyle = 'rgba(255, 255, 255, .9)';
+    endingCtx.lineWidth = 2;
+    endingCtx.beginPath();
+    endingCtx.moveTo(418, 187 + bob);
+    endingCtx.quadraticCurveTo(455, 135, floatX, floatY);
+    endingCtx.stroke();
+    drawEmoji('🟥', floatX, floatY, 24);
+
+    const fishingCatch = time % 6 > 3.7;
+    if (fishingCatch) {
+      const catchProgress = (time % 6 - 3.7) / 2.3;
+      drawEmoji('🐟', floatX + catchProgress * 60, floatY - catchProgress * 85, 42, -.25);
+      drawEmoji('✨', floatX + catchProgress * 60, floatY - catchProgress * 85 - 25, 27);
+    }
+
+    // Ingredient table and cooler for the BBQ; ingredients pop up as he prepares them.
+    endingCtx.fillStyle = '#9b633b';
+    endingCtx.fillRect(610, 260, 210, 18);
+    endingCtx.fillRect(630, 278, 14, 80);
+    endingCtx.fillRect(786, 278, 14, 80);
+    endingCtx.fillStyle = '#ffe6a8';
+    endingCtx.fillRect(648, 230, 128, 30);
+    drawEmoji('🥬', 665, 215 + Math.sin(time * 2) * 4, 38);
+    drawEmoji('🐟', 715, 214 + Math.sin(time * 2 + 1) * 5, 38);
+    drawEmoji('🍖', 765, 215 + Math.sin(time * 2 + 2) * 4, 36);
+    drawEmoji('🧊', 725, 325, 52);
+    if (time % 4 > 2.2 && time % 4 < 3.7) {
+      drawEmoji('🥣', 548, 265, 42);
+      drawEmoji('✨', 573, 235 + Math.sin(time * 8) * 7, 26);
+    }
+
+    // Ikeda-san paces along the far edge, ready with the BBQ money.
+    const ikedaX = 842 + Math.sin(time * 1.25) * 17;
+    const ikedaY = 226 + Math.sin(time * 2.4) * 5;
+    endingCtx.fillStyle = 'rgba(255, 255, 255, .9)';
+    endingCtx.font = 'bold 20px sans-serif';
+    endingCtx.textAlign = 'center';
+    endingCtx.fillText('池田さん', ikedaX, 184);
+    drawEmoji('🧔💵', ikedaX, ikedaY, 52, Math.sin(time * 1.25) * .06);
+
+    if (!prefersReducedMotion) {
+      readyRaf = requestAnimationFrame(drawReady);
+    }
   }
  
   function bindHold(element, key) {
@@ -743,9 +1163,13 @@ canvas {
   bindHold(leftBtn, 'ArrowLeft');
   bindHold(rightBtn, 'ArrowRight');
   startBtn.addEventListener('click', start);
+  clearPreviewBtn.addEventListener('click', () => previewEnding(true));
+  failPreviewBtn.addEventListener('click', () => previewEnding(false));
  
   updateHud();
   draw();
+  overlay.classList.add('ending-ready');
+  drawReady(performance.now());
 })();
 </script>
 </body>
