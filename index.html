@@ -35,6 +35,221 @@ canvas{display:block;width:100%;height:auto;touch-action:none}.overlay{position:
 footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
 @media(max-width:700px){.grid,.cols{grid-template-columns:1fr}.step{grid-template-columns:34px 75px 1fr}.card{border-radius:16px}.hero{min-height:75vh}.game-hud{grid-template-columns:repeat(3,1fr)}.hud-item{padding:10px 8px}.alert{font-size:.92rem;padding:10px 12px;min-height:54px}.legend{font-size:.84rem;line-height:1.55;padding:2px 4px}.controls{gap:10px}.move{width:64px;height:64px;border-radius:16px} .overlay{padding:16px}.overlay p{max-width:100%}}
 @media print{.hero{min-height:auto;padding:70px 20px}main{margin:0}.game-wrap{break-before:page}.controls,.scroll{display:none}.card{box-shadow:none}}
+.game-wrap {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #071c2c, #123f55);
+  color: white;
+  padding: clamp(16px, 3vw, 30px);
+  overflow: hidden;
+}
+ 
+.game-head {
+  max-width: 900px;
+  margin: 0 auto;
+  text-align: center;
+}
+ 
+.game-head h2 {
+  margin: 4px 0 8px;
+  color: white;
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
+}
+ 
+.game-head p {
+  margin: 8px 0 14px;
+}
+ 
+.game-title {
+  margin: 8px 0;
+  font-size: clamp(2rem, 6vw, 4rem);
+  font-weight: 1000;
+  line-height: 1.05;
+  color: #ffda63;
+  text-shadow: 0 3px 0 #b8422e, 0 7px 18px #000;
+}
+ 
+.subtitle {
+  font-weight: 900;
+  letter-spacing: .08em;
+  color: #ff8b75;
+}
+ 
+.game-hud {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 900px;
+  margin: 18px auto 10px;
+}
+ 
+.hud-item {
+  padding: 8px;
+  text-align: center;
+  background: rgba(255, 255, 255, .1);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: 12px;
+}
+ 
+.hud-item b {
+  display: block;
+  font-size: 1.25rem;
+  color: #ffe47e;
+}
+ 
+.alert {
+  min-height: 32px;
+  margin: 8px auto 0;
+  text-align: center;
+  color: #ffdf68;
+  font-size: clamp(.9rem, 2.5vw, 1.2rem);
+  font-weight: 1000;
+  letter-spacing: .04em;
+}
+ 
+.canvas-shell {
+  position: relative;
+  max-width: 900px;
+  margin: auto;
+  overflow: hidden;
+  background: #0e7795;
+  border: 3px solid rgba(255, 255, 255, .24);
+  border-radius: 17px;
+  box-shadow: inset 0 0 35px rgba(0, 0, 0, .38);
+}
+ 
+canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+}
+ 
+.overlay {
+  position: absolute;
+  z-index: 10;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  text-align: center;
+  background: rgba(3, 18, 29, .78);
+  backdrop-filter: blur(4px);
+  transition: opacity .25s;
+}
+ 
+.overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+ 
+.overlay h3 {
+  margin: 0 0 8px;
+  color: #ffe06a;
+  font-size: clamp(1.7rem, 5vw, 3.2rem);
+}
+ 
+.overlay p {
+  max-width: 610px;
+  margin: 8px auto 18px;
+  white-space: pre-line;
+}
+ 
+.btn {
+  position: relative;
+  z-index: 11;
+  padding: 13px 24px;
+  color: #392500;
+  font-weight: 900;
+  cursor: pointer;
+  background: linear-gradient(#ffdf68, #f1a52b);
+  border: 0;
+  border-radius: 999px;
+  box-shadow: 0 7px 0 #a95d19, 0 12px 20px rgba(0, 0, 0, .3);
+}
+ 
+.btn:hover {
+  filter: brightness(1.06);
+}
+ 
+.btn:focus-visible,
+.move:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
+}
+ 
+.btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 2px 0 #a95d19;
+}
+ 
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-top: 14px;
+}
+ 
+.move {
+  width: 90px;
+  height: 54px;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  touch-action: none;
+  background: rgba(255, 255, 255, .12);
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 16px;
+}
+ 
+.move:active {
+  background: rgba(255, 255, 255, .28);
+}
+ 
+.legend {
+  margin-top: 16px;
+  text-align: center;
+  color: #c4dae2;
+  font-size: .92rem;
+}
+ 
+.sirens {
+  animation: siren .35s infinite alternate;
+}
+ 
+@keyframes siren {
+  from { box-shadow: inset 0 0 0 4px rgba(255, 39, 39, .2); }
+  to { box-shadow: inset 0 0 40px 13px rgba(255, 39, 39, .65); }
+}
+ 
+@media (max-width: 700px) {
+  .game-wrap {
+    padding: 12px;
+  }
+ 
+  .game-hud {
+    grid-template-columns: repeat(3, 1fr);
+  }
+ 
+  .hud-item {
+    font-size: .76rem;
+  }
+ 
+  .hud-item b {
+    font-size: 1rem;
+  }
+ 
+  .controls {
+    gap: 12px;
+  }
+ 
+  .move {
+    width: min(38vw, 140px);
+  }
+}
+
 </style>
 </head>
 <body>
@@ -153,33 +368,44 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
   </section>
  
   <section class="game-wrap" id="game">
-    <div class="game-head">
-      <div class="subtitle">SARUSHIMA PANIC FISHING</div>
-      <div class="game-title">爆釣馬場君</div>
-      <h2>猿島危機一髪！</h2>
-      <p>魚を釣り上げ、トンビと大波をかわし、最終フェリーまで生き残れ！</p>
+  <div class="game-head">
+    <div class="subtitle">SARUSHIMA PANIC FISHING</div>
+    <div class="game-title">爆釣馬場君</div>
+    <h2>猿島危機一髪！</h2>
+    <p>魚を釣り上げ、トンビと大波をかわし、最終フェリーまで生き残れ！</p>
+  </div>
+ 
+  <div class="game-hud">
+    <div class="hud-item">SCORE<b id="score">0</b></div>
+    <div class="hud-item">LIFE<b id="life">♥ ♥ ♥</b></div>
+    <div class="hud-item">TIME<b id="time">45</b></div>
+  </div>
+ 
+  <div class="alert" id="alert" aria-live="polite">左右キー / A・D / 画面ボタンで移動</div>
+ 
+  <div class="canvas-shell" id="shell">
+    <canvas id="gameCanvas" width="900" height="500" aria-label="爆釣馬場君ゲーム画面"></canvas>
+ 
+    <div class="overlay" id="overlay">
+      <h3 id="overlayTitle">出航準備よし！</h3>
+      <p id="overlayText">魚は得点、ビールとソーセージはボーナス。トンビと大波に当たるとライフが減ります。45秒耐えればBBQ成功！</p>
+      <button class="btn" id="startBtn" type="button">ゲーム開始</button>
     </div>
-    <div class="game-hud">
-      <div class="hud-item">SCORE<b id="score">0</b></div>
-      <div class="hud-item">LIFE<b id="life">♥ ♥ ♥</b></div>
-      <div class="hud-item">TIME<b id="time">45</b></div>
-    </div>
-    <div class="alert" id="alert">左右キー / A・D / 画面ボタンで移動</div>
-    <div class="canvas-shell" id="shell">
-      <canvas id="gameCanvas" width="900" height="500" aria-label="爆釣馬場君ゲーム画面"></canvas>
-      <div class="overlay" id="overlay">
-        <h3 id="overlayTitle">出航準備よし！</h3>
-        <p id="overlayText">魚とビール・ソーセージで得点、トンビと大波でライフ減少。45秒生き残ればBBQ成功！</p>
-        <button class="btn" id="startBtn">ゲーム開始</button>
-      </div>
-    </div>
-    <div class="controls"><button class="move" id="leftBtn" aria-label="左へ移動">◀</button><button class="move" id="rightBtn" aria-label="右へ移動">▶</button></div>
-    <div class="legend">🐟 +10　🐠 +20　🍺 +30　🌭 +50　🦅 LIFE -1　🌊 LIFE -2</div>
-  </section>
+  </div>
+ 
+  <div class="controls">
+    <button class="move" id="leftBtn" type="button" aria-label="左へ移動">◀</button>
+    <button class="move" id="rightBtn" type="button" aria-label="右へ移動">▶</button>
+  </div>
+ 
+  <div class="legend">🐟 +10　🐠 +20　🍺 +30　🌭 +50　🦅 LIFE -1　🌊 LIFE -2</div>
+</section>
 </main>
 <footer>猿島 釣り＆BBQ 旅のしおり ｜ 安全第一で楽しい一日を</footer>
 <script>
 (() => {
+  'use strict';
+ 
   const canvas = document.getElementById('gameCanvas');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -191,24 +417,335 @@ footer{text-align:center;color:#58727e;padding:25px 15px 45px;font-size:.88rem}
   const overlayText = document.getElementById('overlayText');
   const startBtn = document.getElementById('startBtn');
   const shell = document.getElementById('shell');
-  let running=false, score=0, life=3, remaining=45, items=[], keys={}, last=0, spawnClock=0, startAt=0, raf;
-  const player={x:410,y:420,w:80,h:52,speed:410};
-  const types=[
-    {e:'🐟',v:10,h:0,p:.38,s:130},{e:'🐠',v:20,h:0,p:.18,s:155},{e:'🍺',v:30,h:0,p:.08,s:170},{e:'🌭',v:50,h:0,p:.06,s:180},
-    {e:'🦅',v:0,h:1,p:.22,s:205},{e:'🌊',v:0,h:2,p:.08,s:235}
+  const leftBtn = document.getElementById('leftBtn');
+  const rightBtn = document.getElementById('rightBtn');
+ 
+  let running = false;
+  let score = 0;
+  let life = 3;
+  let remaining = 45;
+  let items = [];
+  let keys = Object.create(null);
+  let last = 0;
+  let spawnClock = 0;
+  let startAt = 0;
+  let raf = 0;
+ 
+  const player = {
+    x: 410,
+    y: 420,
+    w: 80,
+    h: 52,
+    speed: 410
+  };
+ 
+  const types = [
+    { e: '🐟', v: 10, h: 0, p: .38, s: 130 },
+    { e: '🐠', v: 20, h: 0, p: .18, s: 155 },
+    { e: '🍺', v: 30, h: 0, p: .08, s: 170 },
+    { e: '🌭', v: 50, h: 0, p: .06, s: 180 },
+    { e: '🦅', v: 0, h: 1, p: .22, s: 205 },
+    { e: '🌊', v: 0, h: 2, p: .08, s: 235 }
   ];
-  function pick(){let r=Math.random(),a=0;for(const t of types){a+=t.p;if(r<=a)return t}return types[0]}
-  function spawn(){const t=pick();items.push({x:35+Math.random()*830,y:-45,t,size:t.e==='🌊'?52:38,spin:(Math.random()-.5)*1.5})}
-  function start(){cancelAnimationFrame(raf);running=true;score=0;life=3;remaining=45;items=[];player.x=410;last=performance.now();startAt=last;spawnClock=0;overlay.classList.add('hidden');shell.classList.remove('sirens');updateHud();loop(last)}
-  function updateHud(){scoreEl.textContent=score;lifeEl.textContent=life>0?'♥ '.repeat(life).trim():'なし';timeEl.textContent=Math.max(0,Math.ceil(remaining))}
-  function collide(a,b){return a.x<b.x+b.w && a.x+a.w>b.x && a.y<b.y+b.h && a.y+a.h>b.y}
-  function hit(item){if(item.t.h){life-=item.t.h;alertEl.textContent=item.t.h===2?'大波直撃！！ 猿島危機一髪！':'BBQ食材流出！！ トンビ襲来！';canvas.animate([{transform:'translateX(-7px)'},{transform:'translateX(7px)'},{transform:'translateX(0)'}],{duration:240});}else{score+=item.t.v;alertEl.textContent=item.t.e==='🌭'?'ソーセージ確保！ ＋50':item.t.e==='🍺'?'冷えたビール確保！ ＋30':'ヒット！ 爆釣継続中！'}updateHud()}
-  function end(clear){running=false;cancelAnimationFrame(raf);shell.classList.remove('sirens');overlay.classList.remove('hidden');if(clear){const title=score>=500?'超爆釣馬場神、降臨！':'猿島BBQ成功！';overlayTitle.textContent=title;overlayText.textContent=`最終フェリーに間に合った！ 本日のスコアは ${score} 点。${score>=500?'伝説級の釣果です。':''}`;}else{overlayTitle.textContent='猿島危機一髪…！';overlayText.textContent=`トンビと大波に阻まれた。スコアは ${score} 点。もう一度、爆釣に挑戦！`;}startBtn.textContent='もう一度挑戦'}
-  function loop(now){if(!running)return;const dt=Math.min((now-last)/1000,.04);last=now;remaining=45-(now-startAt)/1000;if(keys.ArrowLeft||keys.a||keys.A)player.x-=player.speed*dt;if(keys.ArrowRight||keys.d||keys.D)player.x+=player.speed*dt;player.x=Math.max(8,Math.min(canvas.width-player.w-8,player.x));spawnClock+=dt;const urgency=remaining<10?.34:.52;if(spawnClock>urgency){spawn();spawnClock=0}for(const i of items)i.y+=i.t.s*dt*(remaining<10?1.35:1);items=items.filter(i=>{const b={x:i.x-i.size/2,y:i.y-i.size/2,w:i.size,h:i.size};if(collide(player,b)){hit(i);return false}return i.y<550});if(remaining<=10&&remaining>0){shell.classList.add('sirens');alertEl.textContent=`最終フェリー出航まであと ${Math.ceil(remaining)} 秒！！`}if(life<=0)return end(false);if(remaining<=0)return end(true);updateHud();draw();raf=requestAnimationFrame(loop)}
-  function draw(){const g=ctx.createLinearGradient(0,0,0,500);g.addColorStop(0,'#85d8e7');g.addColorStop(.45,'#168bac');g.addColorStop(1,'#075a78');ctx.fillStyle=g;ctx.fillRect(0,0,900,500);ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.arc(110,110,46,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,255,255,.14)';for(let i=0;i<6;i++)ctx.fillRect(60+i*140,430+i%2*8,120,18);ctx.save();ctx.translate(player.x,player.y);ctx.fillStyle='#f0e3c2';ctx.fillRect(0,10,80,22);ctx.fillStyle='#d2b48c';ctx.beginPath();ctx.moveTo(12,10);ctx.lineTo(68,10);ctx.lineTo(56,0);ctx.lineTo(24,0);ctx.closePath();ctx.fill();ctx.fillStyle='#7a4d2a';ctx.fillRect(6,26,68,22);ctx.fillStyle='#2f7f3f';ctx.fillRect(0,0,80,11);ctx.restore();for(const i of items){ctx.save();ctx.translate(i.x,i.y);ctx.rotate(i.spin);ctx.font=`${i.size}px "Segoe UI Emoji","Apple Color Emoji","Noto Color Emoji",sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(i.t.e,0,0);ctx.restore()} }
-  function bindHold(el,key){const on=e=>{e.preventDefault();keys[key]=true},off=e=>{e.preventDefault();keys[key]=false};el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('pointerleave',off)}
-  addEventListener('keydown',e=>{keys[e.key]=true;if(['ArrowLeft','ArrowRight',' '].includes(e.key))e.preventDefault()});addEventListener('keyup',e=>keys[e.key]=false);bindHold(document.getElementById('leftBtn'),'ArrowLeft');bindHold(document.getElementById('rightBtn'),'ArrowRight');startBtn.addEventListener('click',start);
-  updateHud();draw();
+ 
+  function pick() {
+    const r = Math.random();
+    let accumulated = 0;
+ 
+    for (const type of types) {
+      accumulated += type.p;
+      if (r <= accumulated) return type;
+    }
+ 
+    return types[0];
+  }
+ 
+  function spawn() {
+    const type = pick();
+ 
+    items.push({
+      x: 35 + Math.random() * 830,
+      y: -45,
+      t: type,
+      size: type.e === '🌊' ? 52 : 38,
+      spin: (Math.random() - .5) * 1.5
+    });
+  }
+ 
+  function updateHud() {
+    scoreEl.textContent = String(score);
+    lifeEl.textContent = life > 0 ? '♥ '.repeat(life).trim() : 'なし';
+    timeEl.textContent = String(Math.max(0, Math.ceil(remaining)));
+  }
+ 
+  function start() {
+    cancelAnimationFrame(raf);
+ 
+    running = true;
+    score = 0;
+    life = 3;
+    remaining = 45;
+    items = [];
+    keys = Object.create(null);
+    player.x = 410;
+    last = performance.now();
+    startAt = last;
+    spawnClock = 0;
+ 
+    overlay.classList.add('hidden');
+    shell.classList.remove('sirens');
+    alertEl.textContent = '爆釣開始！ 魚を逃すな！';
+    updateHud();
+    draw();
+ 
+    raf = requestAnimationFrame(loop);
+  }
+ 
+  function collide(a, b) {
+    return (
+      a.x < b.x + b.w &&
+      a.x + a.w > b.x &&
+      a.y < b.y + b.h &&
+      a.y + a.h > b.y
+    );
+  }
+ 
+  function hit(item) {
+    if (item.t.h) {
+      life = Math.max(0, life - item.t.h);
+      alertEl.textContent = item.t.h === 2
+        ? '大波直撃！！ 猿島危機一髪！'
+        : 'BBQ食材流出！！ トンビ襲来！';
+ 
+      if (typeof canvas.animate === 'function') {
+        canvas.animate(
+          [
+            { transform: 'translateX(-7px)' },
+            { transform: 'translateX(7px)' },
+            { transform: 'translateX(0)' }
+          ],
+          { duration: 240 }
+        );
+      }
+    } else {
+      score += item.t.v;
+      alertEl.textContent = item.t.e === '🌭'
+        ? 'ソーセージ確保！ ＋50'
+        : item.t.e === '🍺'
+          ? '冷えたビール確保！ ＋30'
+          : 'ヒット！ 爆釣継続中！';
+    }
+ 
+    updateHud();
+  }
+ 
+  function end(clear) {
+    running = false;
+    cancelAnimationFrame(raf);
+    shell.classList.remove('sirens');
+    overlay.classList.remove('hidden');
+ 
+    if (clear) {
+      let title;
+      let message;
+ 
+      if (score >= 700) {
+        title = '池田さん、神スポンサー降臨！！';
+        message =
+          `無事に最終フェリーへ乗船成功！\n\n` +
+          `本日のスコアは ${score} 点。\n\n` +
+          `池田さんが全員分のフェリー代とBBQ代を支払ってくれました！\n` +
+          `さらに飲み放題コースまで追加！\n\n` +
+          `伝説級の猿島遠征となりました。`;
+      } else if (score >= 500) {
+        title = '池田さん、伝説の太っ腹発動！';
+        message =
+          `無事に最終フェリーへ乗船成功！\n\n` +
+          `本日のスコアは ${score} 点。\n\n` +
+          `池田さんが全員分のフェリー代とBBQ代を支払ってくれました！\n\n` +
+          `爆釣の功績が認められました。`;
+      } else {
+        title = '猿島BBQ大成功！';
+        message =
+          `無事に最終フェリーへ乗船成功！\n\n` +
+          `本日のスコアは ${score} 点。\n\n` +
+          `池田さんが全員分のフェリー代とBBQ代を支払ってくれました！\n\n` +
+          `最高の一日になりました。`;
+      }
+ 
+      overlayTitle.textContent = title;
+      overlayText.textContent = message;
+      alertEl.textContent = '祝！池田さんのおごりで猿島BBQ開催！';
+    } else {
+      overlayTitle.textContent = '猿島危機一髪…！';
+      overlayText.textContent =
+        `トンビと大波に阻まれた。\n\n` +
+        `スコアは ${score} 点。\n\n` +
+        `フェリーを逃し、池田さんのおごりも幻となった…。`;
+      alertEl.textContent = 'フェリーに間に合わなかった！';
+    }
+ 
+    startBtn.textContent = 'もう一度挑戦';
+  }
+ 
+  function loop(now) {
+    if (!running) return;
+ 
+    const dt = Math.min((now - last) / 1000, .04);
+    last = now;
+    remaining = 45 - (now - startAt) / 1000;
+ 
+    if (keys.ArrowLeft || keys.a || keys.A) {
+      player.x -= player.speed * dt;
+    }
+ 
+    if (keys.ArrowRight || keys.d || keys.D) {
+      player.x += player.speed * dt;
+    }
+ 
+    player.x = Math.max(8, Math.min(canvas.width - player.w - 8, player.x));
+ 
+    spawnClock += dt;
+    const urgency = remaining < 10 ? .34 : .52;
+ 
+    if (spawnClock > urgency) {
+      spawn();
+      spawnClock = 0;
+    }
+ 
+    for (const item of items) {
+      item.y += item.t.s * dt * (remaining < 10 ? 1.35 : 1);
+    }
+ 
+    items = items.filter(item => {
+      const box = {
+        x: item.x - item.size / 2,
+        y: item.y - item.size / 2,
+        w: item.size,
+        h: item.size
+      };
+ 
+      if (collide(player, box)) {
+        hit(item);
+        return false;
+      }
+ 
+      return item.y < 550;
+    });
+ 
+    if (remaining < 10 && remaining > 0) {
+      shell.classList.add('sirens');
+      alertEl.textContent =
+        `最終フェリー出航まであと ${Math.ceil(remaining)} 秒！！ 池田さんがお会計の準備中！`;
+    }
+ 
+    if (life <= 0) {
+      end(false);
+      return;
+    }
+ 
+    if (remaining <= 0) {
+      end(true);
+      return;
+    }
+ 
+    updateHud();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+ 
+  function draw() {
+    const gradient = ctx.createLinearGradient(0, 0, 0, 500);
+    gradient.addColorStop(0, '#85d8e7');
+    gradient.addColorStop(.45, '#168bac');
+    gradient.addColorStop(1, '#075a78');
+ 
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, 900, 500);
+ 
+    ctx.fillStyle = 'rgba(255,255,255,.28)';
+    for (let y = 60; y < 390; y += 65) {
+      ctx.fillRect((y * 7 + performance.now() / 20) % 900, y, 135, 3);
+    }
+ 
+    ctx.fillStyle = '#e7c576';
+    ctx.fillRect(0, 476, 900, 24);
+ 
+    ctx.font = '34px sans-serif';
+    ctx.textAlign = 'center';
+ 
+    for (const item of items) {
+      ctx.save();
+      ctx.translate(item.x, item.y);
+      ctx.rotate(item.spin * Math.sin(item.y / 70));
+      ctx.fillText(item.t.e, 0, 0);
+      ctx.restore();
+    }
+ 
+    if (remaining <= 10) {
+      ctx.font = '90px sans-serif';
+      ctx.fillText('⛴️', 760, 420);
+ 
+      ctx.font = '55px sans-serif';
+      ctx.fillText('🧔💴', 670, 420);
+ 
+      ctx.font = '18px sans-serif';
+      ctx.fillStyle = '#fff';
+      ctx.fillText('池田さん待機中', 690, 455);
+    }
+ 
+    ctx.save();
+    ctx.translate(player.x + player.w / 2, player.y + player.h / 2);
+    ctx.font = '42px sans-serif';
+    ctx.fillText('🎣', 0, 5);
+    ctx.font = '16px sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.fillText('馬場君', 0, 28);
+    ctx.restore();
+  }
+ 
+  function bindHold(element, key) {
+    const on = event => {
+      event.preventDefault();
+      keys[key] = true;
+      if (element.setPointerCapture && event.pointerId !== undefined) {
+        try { element.setPointerCapture(event.pointerId); } catch (_) {}
+      }
+    };
+ 
+    const off = event => {
+      event.preventDefault();
+      keys[key] = false;
+    };
+ 
+    element.addEventListener('pointerdown', on);
+    element.addEventListener('pointerup', off);
+    element.addEventListener('pointerleave', off);
+    element.addEventListener('pointercancel', off);
+  }
+ 
+  window.addEventListener('keydown', event => {
+    keys[event.key] = true;
+ 
+    if (['ArrowLeft', 'ArrowRight', ' '].includes(event.key)) {
+      event.preventDefault();
+    }
+  }, { passive: false });
+ 
+  window.addEventListener('keyup', event => {
+    keys[event.key] = false;
+  });
+ 
+  window.addEventListener('blur', () => {
+    keys = Object.create(null);
+  });
+ 
+  bindHold(leftBtn, 'ArrowLeft');
+  bindHold(rightBtn, 'ArrowRight');
+  startBtn.addEventListener('click', start);
+ 
+  updateHud();
+  draw();
 })();
 </script>
 </body>
